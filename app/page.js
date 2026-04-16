@@ -1,7 +1,17 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 
-const categoryOptions = ["업무", "개인", "채용", "미팅", "기타"];
+const categoryOptions = [
+  "개인",
+  "채용",
+  "미팅",
+  "노무",
+  "기획",
+  "인건비",
+  "총무",
+  "오피스",
+  "경영진",
+];
 
 const priorityOptions = {
   high: {
@@ -88,9 +98,15 @@ const styles = {
   },
   inputGrid: {
     display: "grid",
-    gridTemplateColumns: "2.1fr 1.2fr 1fr 1fr auto",
+    gridTemplateColumns: "minmax(0, 1.8fr) minmax(120px, 1fr) minmax(110px, 0.8fr) minmax(120px, 0.9fr) auto",
     gap: 12,
     alignItems: "end",
+  },
+  inputPrimary: {
+    minWidth: 0,
+  },
+  inputSecondaryRow: {
+    display: "contents",
   },
   label: {
     display: "block",
@@ -107,6 +123,17 @@ const styles = {
     background: "#ffffff",
     padding: "0 14px",
     fontSize: 14,
+    boxSizing: "border-box",
+    outline: "none",
+  },
+  inputFieldLarge: {
+    width: "100%",
+    height: 52,
+    borderRadius: 16,
+    border: "1px solid #dbe3ee",
+    background: "#ffffff",
+    padding: "0 16px",
+    fontSize: 15,
     boxSizing: "border-box",
     outline: "none",
   },
@@ -136,11 +163,21 @@ const styles = {
   empty: {
     border: "1px dashed #cbd5e1",
     background: "#f8fafc",
-    color: "#94a3b8",
+    color: "#64748b",
     borderRadius: 18,
-    padding: "28px 16px",
+    padding: "36px 20px",
     textAlign: "center",
     fontSize: 14,
+  },
+  noticeBox: {
+    marginTop: 14,
+    background: "#f8fafc",
+    border: "1px solid #e2e8f0",
+    color: "#475569",
+    borderRadius: 16,
+    padding: "12px 14px",
+    fontSize: 13,
+    lineHeight: 1.5,
   },
 };
 
@@ -165,35 +202,7 @@ export default function Page() {
       }
     }
 
-    return [
-      {
-        id: 1,
-        text: "면접 피드백 취합",
-        done: false,
-        deadline: "2026-04-18",
-        priority: "high",
-        category: "채용",
-        createdAt: 1,
-      },
-      {
-        id: 2,
-        text: "온보딩 체크리스트 정리",
-        done: false,
-        deadline: "2026-04-20",
-        priority: "medium",
-        category: "업무",
-        createdAt: 2,
-      },
-      {
-        id: 3,
-        text: "주간 1on1 일정 확정",
-        done: true,
-        deadline: "2026-04-16",
-        priority: "low",
-        category: "미팅",
-        createdAt: 3,
-      },
-    ];
+    return [];
   });
   const [input, setInput] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -294,13 +303,17 @@ export default function Page() {
     <div style={styles.page}>
       <div style={styles.container}>
         <div style={styles.card}>
-          <div style={styles.hero}>
-            <h1 style={styles.title}>HR To Do List</h1>
+          <div style={styles.hero} className="todo-hero">
+            <h1 style={styles.title} className="todo-title">HR To Do List</h1>
             <p style={styles.subtitle}>
-              채용, 미팅, 운영 업무를 우선순위와 마감일 기준으로 관리하세요.
+              일 잘하는 HR담당자가 되기 위해, 이번 주 업무들을 우선순위와 마감일 기준으로 관리해 봅시다! 😉
             </p>
 
-            <div style={styles.statRow}>
+            <div style={styles.noticeBox}>
+              이 앱은 현재 사용 중인 브라우저에 할 일이 저장됩니다. 같은 링크를 열어도 다른 사람과 목록이 공유되지는 않습니다.
+            </div>
+
+            <div style={styles.statRow} className="todo-stat-row">
               <div style={styles.statCard}>
                 <div style={styles.statLabel}>전체</div>
                 <div style={styles.statValue}>{counts.all}</div>
@@ -316,12 +329,45 @@ export default function Page() {
             </div>
           </div>
 
-          <div style={styles.body}>
-            <div style={styles.inputGrid}>
-              <div>
+          <div style={styles.body} className="todo-body">
+            <style>
+              {`
+                @media (max-width: 760px) {
+                  .todo-input-grid {
+                    grid-template-columns: 1fr !important;
+                    gap: 14px !important;
+                  }
+                  .todo-input-primary {
+                    grid-column: 1 / -1;
+                  }
+                  .todo-input-secondary-row {
+                    display: grid !important;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 12px;
+                  }
+                  .todo-input-add {
+                    grid-column: span 2;
+                  }
+                  .todo-title {
+                    font-size: 28px !important;
+                  }
+                  .todo-body {
+                    padding: 20px !important;
+                  }
+                  .todo-hero {
+                    padding: 24px 20px 18px 20px !important;
+                  }
+                  .todo-stat-row {
+                    grid-template-columns: 1fr !important;
+                  }
+                }
+              `}
+            </style>
+            <div style={styles.inputGrid} className="todo-input-grid">
+              <div style={styles.inputPrimary} className="todo-input-primary">
                 <label style={styles.label}>할 일</label>
                 <input
-                  style={styles.field}
+                  style={styles.inputFieldLarge}
                   placeholder="예: 후보자 레퍼런스 체크 요청"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -329,8 +375,9 @@ export default function Page() {
                 />
               </div>
 
-              <div>
-                <label style={styles.label}>마감일</label>
+              <div style={styles.inputSecondaryRow} className="todo-input-secondary-row">
+                <div>
+                  <label style={styles.label}>마감일</label>
                 <input
                   style={styles.field}
                   type="date"
@@ -339,8 +386,8 @@ export default function Page() {
                 />
               </div>
 
-              <div>
-                <label style={styles.label}>우선순위</label>
+                <div>
+                  <label style={styles.label}>우선순위</label>
                 <select
                   style={styles.field}
                   value={priority}
@@ -352,8 +399,8 @@ export default function Page() {
                 </select>
               </div>
 
-              <div>
-                <label style={styles.label}>카테고리</label>
+                <div>
+                  <label style={styles.label}>카테고리</label>
                 <select
                   style={styles.field}
                   value={category}
@@ -367,11 +414,12 @@ export default function Page() {
                 </select>
               </div>
 
-              <div>
-                <label style={styles.label}>&nbsp;</label>
-                <button style={styles.addButton} onClick={addTask}>
-                  추가
-                </button>
+                <div className="todo-input-add">
+                  <label style={styles.label}>&nbsp;</label>
+                  <button style={{ ...styles.addButton, width: "100%" }} onClick={addTask}>
+                    추가
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -392,7 +440,14 @@ export default function Page() {
 
             <div style={styles.list}>
               {sortedTasks.length === 0 ? (
-                <div style={styles.empty}>표시할 할 일이 없습니다.</div>
+                <div style={styles.empty}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#334155", marginBottom: 8 }}>
+                    아직 등록된 할 일이 없습니다.
+                  </div>
+                  <div>
+                    상단 입력 영역에서 할 일, 마감일, 우선순위, 카테고리를 선택한 뒤 첫 업무를 추가해보세요.
+                  </div>
+                </div>
               ) : (
                 sortedTasks.map((task) => {
                   const priorityStyle = priorityOptions[task.priority];
