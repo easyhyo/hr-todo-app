@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useMemo, useState } from "react";
 
 const categoryOptions = ["업무", "개인", "채용", "미팅", "기타"];
